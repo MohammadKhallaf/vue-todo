@@ -20,29 +20,23 @@ export default {
     };
   },
   methods: {
-    focusOnInput() {
+    editBtnHandler(item) {
+      this.isEdit = true;
+      this.currentItem = item;
+      this.itemInputText =
+        this.items[this.items.findIndex((_) => _.id === item.id)].description;
       this.$refs.taskInput.focus();
     },
-    updateCurrentItem(item) {
-      this.currentItem = item;
+    delBtnHadler(item) {
+      this.items = this.items.filter((_) => _.id != item.id);
     },
     updateItem(item) {
       const itemIdx = this.items.findIndex((_) => _.id === item.id);
-      console.log(item);
+
       this.items[itemIdx] = { id: item.id, description: item.description };
       this.isEdit = false;
     },
-    deleteItem(item) {
-      this.items = this.items.filter((_) => _.id != item.id);
-    },
-    updateEditState(state) {
-      this.isEdit = state;
-    },
-    updateInputText(text) {
-      this.itemInputText = text;
-    },
     formSubmit() {
-      console.dir(this.currentItem);
       this.isEdit
         ? this.updateItem({
             id: this.currentItem.id,
@@ -53,7 +47,6 @@ export default {
             description: this.itemInputText,
           });
       this.itemInputText = "";
-      console.log(this.items);
     },
   },
   mounted() {
@@ -94,19 +87,11 @@ export default {
       <ul class="list-group">
         <ListItem
           v-for="(item, idx) in items"
-          class="list-group-item d-flex align-items-center"
           :key="item.id"
-          :items="items"
           :item="item"
           :idx="idx"
-          :isEdit="isEdit"
-          :editState="updateEditState"
-          :updateInputText="updateInputText"
-          :deleteItem="deleteItem"
-          :inputRef="this.$refs.taskInput"
-          :focusOnInput="focusOnInput"
-          :updateItem="updateItem"
-          :updateCurrentItem="updateCurrentItem"
+          @edit-event="(item) => editBtnHandler(item)"
+          @delete-event="(item) => delBtnHadler(item)"
         />
       </ul>
     </section>
