@@ -2,8 +2,10 @@
 // setup =>  will execute every time an instance of the component is created.
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import "./components/ListItem.vue";
+
 import ListItem from "./components/ListItem.vue";
+import DoneList from "./components/DoneList.vue";
+
 export default {
   data() {
     return {
@@ -14,6 +16,7 @@ export default {
         { id: 3, description: "A fourth item" },
         { id: 4, description: "And a fifth one" },
       ],
+      done: [{ id: 3, description: "A fourth item" }],
       itemInputText: "",
       isEdit: false,
       currentItem: { id: Number, description: String },
@@ -30,12 +33,14 @@ export default {
     delBtnHadler(item) {
       this.items = this.items.filter((_) => _.id != item.id);
     },
+    //
     updateItem(item) {
       const itemIdx = this.items.findIndex((_) => _.id === item.id);
 
       this.items[itemIdx] = { id: item.id, description: item.description };
       this.isEdit = false;
     },
+    //
     formSubmit() {
       this.isEdit
         ? this.updateItem({
@@ -48,17 +53,32 @@ export default {
           });
       this.itemInputText = "";
     },
+    //
+    taskDoneHandler(item) {
+      this.done.push(item);
+    },
+    //
+    escapeHandler(e) {
+      if (e.key !== "Escape") return false;
+      this.isEdit = false;
+      this.itemInputText = "";
+    },
   },
   mounted() {
     this.$refs.taskInput.focus();
   },
-  components: { ListItem },
+  components: { ListItem, DoneList },
 };
 </script>
 
 <template>
   <main class="container m-5 p-5 shadow rounded-3 mx-auto">
-    <header>
+    <header class="d-flex flex-row justify-content-center align-items-center">
+      <img
+        src="./assets/24-hours.png"
+        class="img-fluid me-3"
+        style="height: 35px"
+      />
       <h1 class="fw-bold text-center">TO DO LIST</h1>
     </header>
     <section>
@@ -71,8 +91,14 @@ export default {
           required
           minlength="3"
           ref="taskInput"
+          @keydown="escapeHandler"
         />
-
+        <select class="form-select">
+          <option>G1</option>
+          <option>G2</option>
+          <option>G3</option>
+        </select>
+        <div class="vr"></div>
         <button
           v-if="!isEdit"
           class="btn btn-outline-primary bi bi-plus-square-fill"
@@ -90,12 +116,22 @@ export default {
           :key="item.id"
           :item="item"
           :idx="idx"
-          @edit-event="(item) => editBtnHandler(item)"
-          @delete-event="(item) => delBtnHadler(item)"
+          @done="taskDoneHandler"
+          @edit="editBtnHandler"
+          @delete="delBtnHadler"
         />
       </ul>
     </section>
+    <hr />
+    <DoneList :items="done" />
   </main>
 </template>
 
-<style></style>
+<style>
+main {
+  transition: all 1s ease-in-out;
+}
+select {
+  width: fit-content !important;
+}
+</style>
