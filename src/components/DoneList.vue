@@ -15,7 +15,7 @@ export default {
 </script>
 <template>
   <section>
-    <TitleHeader :img="imgs.doneImg" title="TO DO LIST" />
+    <TitleHeader :img="imgs.doneImg" title="DONE LIST" />
     <ul class="list-group">
       <li class="list-group-item" v-for="(item, idx) in items" :key="idx">
         {{ item.description }}
