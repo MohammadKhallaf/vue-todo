@@ -10,13 +10,13 @@ export default {
   data() {
     return {
       items: [
-        { id: 0, description: "An item " },
-        { id: 1, description: "A second item" },
-        { id: 2, description: "A third item" },
-        { id: 3, description: "A fourth item" },
-        { id: 4, description: "And a fifth one" },
+        { id: 0, description: "An item ", done: false },
+        { id: 1, description: "A second item", done: true },
+        { id: 2, description: "A third item", done: false },
+        { id: 3, description: "A fourth item", done: true },
+        { id: 4, description: "And a fifth one", done: false },
       ],
-      done: [{ id: 3, description: "A fourth item" }],
+
       itemInputText: "",
       isEdit: false,
       currentItem: { id: Number, description: String },
@@ -36,7 +36,6 @@ export default {
     //
     updateItem(item) {
       const itemIdx = this.items.findIndex((_) => _.id === item.id);
-
       this.items[itemIdx] = { id: item.id, description: item.description };
       this.isEdit = false;
     },
@@ -55,7 +54,8 @@ export default {
     },
     //
     taskDoneHandler(item) {
-      this.done.push(item);
+      const itemIdx = this.items.findIndex((_) => _.id === item.id);
+      this.items[itemIdx].done = true;
     },
     //
     escapeHandler(e) {
@@ -66,6 +66,11 @@ export default {
   },
   mounted() {
     this.$refs.taskInput.focus();
+  },
+  computed: {
+    done() {
+      return this.items.filter((item) => item.done);
+    },
   },
   components: { ListItem, DoneList },
 };
@@ -79,7 +84,7 @@ export default {
         class="img-fluid me-3"
         style="height: 35px"
       />
-      <h1 class="fw-bold text-center">TO DO LIST</h1>
+      <h1 class="fw-bold">TO DO LIST</h1>
     </header>
     <section>
       <form class="d-flex gap-2 py-3" @submit.prevent="formSubmit">
@@ -93,7 +98,7 @@ export default {
           ref="taskInput"
           @keydown="escapeHandler"
         />
-        <select class="form-select">
+        <select class="form-select border-secondary">
           <option>G1</option>
           <option>G2</option>
           <option>G3</option>
