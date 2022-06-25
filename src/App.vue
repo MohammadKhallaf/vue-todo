@@ -8,6 +8,7 @@ import DoneList from "./components/DoneList.vue";
 import TitleHeader from "./components/TitleHeader.vue";
 
 import ToDoImg from "./assets/img/24-hours.png";
+import TaskFieldSet from "./components/TaskFieldSet.vue";
 
 export default {
   data() {
@@ -45,15 +46,15 @@ export default {
       this.isEdit = false;
     },
     //
-    formSubmit() {
+    formSubmit(itemText) {
       this.isEdit
         ? this.updateItem({
             id: this.currentItem.id,
-            description: this.itemInputText,
+            description: itemText,
           })
         : this.items.push({
             id: this.items[this.items.length - 1].id + 1,
-            description: this.itemInputText,
+            description: itemText,
           });
       this.itemInputText = "";
     },
@@ -61,23 +62,22 @@ export default {
     taskDoneHandler(item) {
       const itemIdx = this.items.findIndex((_) => _.id === item.id);
       this.items[itemIdx].done = true;
+      console.log(item);
     },
-    //
-    escapeHandler(e) {
-      if (e.key !== "Escape") return false;
-      this.isEdit = false;
-      this.itemInputText = "";
+    toggleEdit(mode) {
+      this.isEdit = !!mode;
     },
-  },
-  mounted() {
-    this.$refs.taskInput.focus();
+    updateInputText(text) {
+      console.dir(text);
+      this.itemInputText = text;
+    },
   },
   computed: {
     done() {
       return this.items.filter((item) => item.done);
     },
   },
-  components: { ListItem, DoneList, TitleHeader },
+  components: { ListItem, DoneList, TitleHeader, TaskFieldSet },
 };
 </script>
 
@@ -85,32 +85,13 @@ export default {
   <main class="container m-5 p-5 shadow rounded-3 mx-auto">
     <section>
       <TitleHeader :img="imgs.toDoImg" title="TO DO LIST" />
-      <form class="d-flex gap-2 py-3" @submit.prevent="formSubmit">
-        <input
-          class="form-control border-secondary"
-          type="text"
-          placeholder="Add a task"
-          v-model="itemInputText"
-          required
-          minlength="3"
-          ref="taskInput"
-          @keydown="escapeHandler"
-        />
-        <select class="form-select border-secondary">
-          <option>G1</option>
-          <option>G2</option>
-          <option>G3</option>
-        </select>
-        <div class="vr"></div>
-        <button
-          v-if="!isEdit"
-          class="btn btn-outline-primary bi bi-plus-square-fill"
-        ></button>
-        <button
-          v-if="isEdit"
-          class="btn btn-outline-primary bi bi-pen-fill"
-        ></button>
-      </form>
+      <TaskFieldSet
+        :is-edit="isEdit"
+        :currentText="itemInputText"
+        @form-submit="formSubmit"
+        @esc="toggleEdit"
+        @input-change="updateInputText"
+      />
     </section>
     <section>
       <ul class="list-group">
