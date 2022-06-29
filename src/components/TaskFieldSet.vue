@@ -32,7 +32,7 @@ export default {
       type="text"
       placeholder="Add a task"
       :value="currentText"
-      v-on:input="$emit('inputChange', $event.target.value)"
+      @input="$emit('inputChange', $event.target.value)"
       required
       minlength="3"
       ref="taskInput"
@@ -45,10 +45,12 @@ export default {
     </select>
     <div class="vr"></div>
     <button
+      type="submit"
       v-if="!isEdit"
       class="btn btn-outline-primary bi bi-plus-square-fill"
     ></button>
     <button
+      type="submit"
       v-if="isEdit"
       class="btn btn-outline-primary bi bi-pen-fill"
     ></button>

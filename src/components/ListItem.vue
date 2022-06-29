@@ -1,9 +1,42 @@
+<template>
+  <ul class="list-group">
+    <template v-for="(item, idx) in list" :key="item.id">
+      <li
+        class="list-group-item align-items-center"
+        :id="`task-${item.id + 1}`"
+        :class="{ 'd-flex': !item.done }"
+        v-show="!item.done"
+      >
+        <button
+          class="btn bi bi-check2-square me-3"
+          @click="$emit('done', item)"
+        ></button>
+        <span class="me-3 fw-bold">{{ idx + 1 }}</span>
+        <span class="me-auto">{{ capitalize(item.description) }}</span>
+        <div class="btn-group shadow-sm">
+          <!-- edit button -->
+          <button
+            class="btn bi bi-pen-fill text-success"
+            text="edit"
+            @click="$emit('edit', item)"
+          ></button>
+          <!-- delete button -->
+          <button
+            type="button"
+            @click="$emit('delete', item)"
+            text="delete"
+            class="btn bi bi-trash3-fill text-danger"
+          ></button>
+        </div>
+      </li>
+    </template>
+  </ul>
+</template>
 <script>
 export default {
   name: "ListItem",
   props: {
-    item: { id: Number, description: String, done: Boolean },
-    idx: Number,
+    list: Array,
   },
   emits: ["edit", "delete", "done"],
   computed: {
@@ -15,38 +48,18 @@ export default {
       };
     },
   },
+  beforeUpdate() {
+    console.log("List Item Before Updated");
+  },
+  updated() {
+    console.log("List Item Updated");
+  },
+  created() {
+    console.log("List Item Created");
+  },
 };
 </script>
-<template>
-  <li
-    class="list-group-item align-items-center"
-    :class="{ 'd-flex': !item.done }"
-    :id="`task-${item.id + 1}`"
-    v-show="!item.done"
-  >
-    <button
-      class="btn bi bi-check2-square me-3"
-      @click="$emit('done', item)"
-    ></button>
-    <span class="me-3 fw-bold">{{ idx + 1 }}</span>
-    <span class="me-auto">{{ capitalize(item.description) }}</span>
-    <div class="btn-group shadow-sm">
-      <!-- edit button -->
-      <button
-        class="btn bi bi-pen-fill text-success"
-        text="edit"
-        @click="$emit('edit', item)"
-      ></button>
-      <!-- delete button -->
-      <button
-        type="button"
-        @click="$emit('delete', item)"
-        text="delete"
-        class="btn bi bi-trash3-fill text-danger"
-      ></button>
-    </div>
-  </li>
-</template>
+
 <style scoped>
 button::before {
   transition: all 250ms cubic-bezier(0.68, -0.55, 0.27, 1.55);
