@@ -22,6 +22,7 @@
     <DoneList :items="done" />
   </main>
 </template>
+
 <script>
 import ListItem from "../components/ListItem.vue";
 import DoneList from "../components/DoneList.vue";
@@ -30,7 +31,7 @@ import TaskFieldSet from "../components/TaskFieldSet.vue";
 
 import ToDoImg from "../assets/img/24-hours.png";
 
-import Task from "../models/Task";
+import Task from "../models/task";
 
 const item_1 = new Task({
   title: "Some title 1 ",
