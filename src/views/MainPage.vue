@@ -23,15 +23,16 @@
   </main>
 </template>
 
-<script>
-import ListItem from "../components/ListItem.vue";
-import DoneList from "../components/DoneList.vue";
-import TitleHeader from "../components/TitleHeader.vue";
-import TaskFieldSet from "../components/TaskFieldSet.vue";
+<script lang="ts">
+import { defineComponent } from "vue";
 
-import ToDoImg from "../assets/img/24-hours.png";
+import ListItem from "@/components/ListItem.vue";
+import DoneList from "@/components/DoneList.vue";
+import TitleHeader from "@/components/TitleHeader.vue";
+import TaskFieldSet from "@/components/TaskFieldSet.vue";
 
-import Task from "../models/task";
+import ToDoImg from "@/assets/img/24-hours.png";
+import Task from "@/models/task";
 
 const item_1 = new Task({
   title: "Some title 1 ",
@@ -69,7 +70,7 @@ const item_5 = new Task({
   state: 3,
 });
 
-export default {
+export default defineComponent({
   data() {
     return {
       items: [...Task.all],
@@ -78,14 +79,15 @@ export default {
       },
       itemInputText: "",
       isEdit: false,
-      currentItem: { id: Number, description: String },
+      currentItem: { id: 0, description: "" },
     };
   },
+
   methods: {
     updateItemsList() {
       this.unDone = [...Task.all];
     },
-    editBtnHandler(item) {
+    editBtnHandler(item: { id: number; description: string }) {
       this.isEdit = true;
       this.currentItem = item;
       this.itemInputText =
@@ -138,6 +140,12 @@ export default {
     },
   },
   components: { ListItem, DoneList, TitleHeader, TaskFieldSet },
-};
+});
 </script>
-<style></style>
+<style lang="scss">
+body {
+  main {
+    // background-color: red;
+  }
+}
+</style>
