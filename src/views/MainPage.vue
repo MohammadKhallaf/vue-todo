@@ -69,17 +69,28 @@ const item_5 = new Task({
   project: "Project 3",
   state: 3,
 });
-
+interface Item {
+  id: number;
+  description: string;
+}
+interface TaskType {
+  id: number;
+  title: string;
+  description: string;
+  done: boolean;
+  project: string;
+  state: number;
+}
 export default defineComponent({
-  data() {
+  data: () => {
     return {
-      items: [...Task.all],
+      items: [...Task.all] as Array<TaskType>,
       imgs: {
         toDoImg: ToDoImg,
       },
       itemInputText: "",
       isEdit: false,
-      currentItem: { id: 0, description: "" },
+      currentItem: {} as Item,
     };
   },
 
@@ -87,23 +98,23 @@ export default defineComponent({
     updateItemsList() {
       this.unDone = [...Task.all];
     },
-    editBtnHandler(item: { id: number; description: string }) {
+    editBtnHandler(item: Item) {
       this.isEdit = true;
       this.currentItem = item;
       this.itemInputText =
         this.items[this.items.findIndex((_) => _.id === item.id)].description;
     },
-    delBtnHadler(item) {
+    delBtnHadler(item: Item) {
       Task.remove(item.id);
       this.updateItemsList();
     },
 
-    updateItem(item) {
+    updateItem(item: Item) {
       Task.get(item.id).update(item);
       this.isEdit = false;
       this.updateItemsList();
     },
-    formSubmit(itemText) {
+    formSubmit(itemText: string) {
       this.isEdit
         ? this.updateItem({
             id: this.currentItem.id,
@@ -113,14 +124,14 @@ export default defineComponent({
       this.itemInputText = "";
       this.updateItemsList();
     },
-    taskDoneHandler(item) {
+    taskDoneHandler(item: Item) {
       Task.get(item.id).makeDone();
       this.updateItemsList();
     },
-    toggleEdit(mode) {
+    toggleEdit(mode: boolean) {
       this.isEdit = !!mode;
     },
-    updateInputText(text) {
+    updateInputText(text: string) {
       this.itemInputText = text;
     },
   },
@@ -132,7 +143,7 @@ export default defineComponent({
       get() {
         return this.items.filter((item) => !item.done);
       },
-      set(list) {
+      set(list: Array<TaskType>) {
         console.log(this.items);
         console.log(list);
         this.items = list;
